@@ -65,6 +65,27 @@ export default defineConfig({
   projects: [
     // SETUPS
     // TESTS - projects
+    {
+      name: 'Test PPIA - Chrome',
+      testMatch: /.*\.generated\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false
+      },
+      dependencies: [],
+    },
+    {
+      name: 'Test PPIA - Firefox',
+      testMatch: /.*\.generated\.spec\.ts/,
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: VIEW_NORMAL,
+        isMobile: false
+      },
+      dependencies: [],
+    },
+
     // {
     //   name: 'webkit',
     //   testMatch: /.*web.spec.ts/,
