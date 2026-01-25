@@ -23,6 +23,35 @@ npx playwright install --with-deps
 npx playwright test --help
 ```
 
+## Script de gestión (end2end.sh)
+
+Este proyecto incluye un script wrapper que facilita la ejecución y gestión de tests.
+
+### Configuración inicial
+```bash
+# Dar permisos de ejecución al script
+chmod +x end2end.sh
+```
+
+### Uso del script
+```bash
+# Menú interactivo (recomendado)
+./end2end.sh
+
+# Opciones avanzadas
+./end2end.sh --u           # Actualizar screenshots automáticamente
+./end2end.sh --headed      # Modo headed con selección de navegador
+./end2end.sh --help        # Ver todas las opciones disponibles
+```
+
+### Funcionalidades del script
+- **Menú interactivo**: Selección fácil de tests y configuraciones
+- **Selección de navegador**: En modo headed puedes elegir Chromium, Firefox o ambos
+- **Update screenshots**: Opción `--u` para actualizar snapshots automáticamente
+- **Configuración workers**: Control de paralelización de tests
+- **Logs detallados**: Opción para mostrar logs de éxito
+- **Detección automática**: Encuentra y lista tests disponibles en el proyecto
+
 ## Error al no detectar los tests en IDE
 Se debe ejecutar en la terminal los siguientes comandos:
 1. Cambiar a la versión 20 `nvm use 20`
