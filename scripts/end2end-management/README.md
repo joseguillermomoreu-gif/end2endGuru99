@@ -33,10 +33,9 @@ scripts/end2end-management/
 ### 1. Asignar Permisos de Ejecución
 
 ```bash
-# Ejecutar el script de configuración de permisos
-cd /var/www/EC2/code/End2EndTests/
-chmod +x setup_permissions.sh
-./setup_permissions.sh
+# Ejecutar desde el directorio del proyecto
+chmod +x end2end.sh
+chmod +x scripts/end2end-management/main.sh
 ```
 
 ### 2. Verificar la Instalación
@@ -54,12 +53,7 @@ chmod +x setup_permissions.sh
 ### Uso Básico (Interactivo)
 
 ```bash
-# Desde el proyecto End2EndTests
-cd /var/www/EC2/code/End2EndTests/
-./end2end.sh
-
-# O desde /var/www/scripts/ (redirección automática)
-cd /var/www/scripts/
+# Desde el directorio del proyecto
 ./end2end.sh
 ```
 
@@ -219,14 +213,14 @@ export -f nueva_funcionalidad
 
 ### Script no ejecutable
 ```bash
-chmod +x /var/www/EC2/code/End2EndTests/end2end.sh
-chmod +x /var/www/EC2/code/End2EndTests/scripts/end2end-management/main.sh
+chmod +x end2end.sh
+chmod +x scripts/end2end-management/main.sh
 ```
 
 ### Error "Módulo no encontrado"
 ```bash
 # Verificar que todos los módulos existen
-ls -la /var/www/EC2/code/End2EndTests/scripts/end2end-management/modules/
+ls -la scripts/end2end-management/modules/
 ```
 
 ### Problemas con Docker
@@ -239,7 +233,6 @@ docker images
 ### Problemas con Git
 ```bash
 # Verificar estado del repositorio
-cd /var/www/EC2/code/End2EndTests/
 git status
 git branch -a
 ```
@@ -266,14 +259,14 @@ El script exporta múltiples variables que pueden ser útiles para debugging:
 
 ## Migración desde Script Anterior
 
-El sistema modular es **100% retrocompatible**. Los usuarios existentes pueden continuar usando:
+El sistema modular es **100% retrocompatible**. Los usuarios existentes pueden continuar usando el script principal:
 
 ```bash
-# Sigue funcionando como antes
-/var/www/scripts/end2endTestsJueves.sh
+# Script principal del proyecto
+./end2end.sh
 ```
 
-El script anterior redirige automáticamente al nuevo sistema modular.
+Todas las funcionalidades previas se mantienen intactas.
 
 ## Versionado
 
@@ -298,6 +291,6 @@ Para contribuir al sistema:
 
 ---
 
-**Autor**: Sistema de Scripts Modular  
-**Última actualización**: 7 de agosto de 2025  
-**Versión**: 1.0.0
+**Autor**: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)  
+**Última actualización**: 25 de enero de 2026  
+**Versión**: 2.0.0

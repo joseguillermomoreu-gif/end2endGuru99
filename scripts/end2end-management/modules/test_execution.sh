@@ -10,7 +10,7 @@
 # - Selección de navegador para modo headed
 # - Opción --u para update screenshots
 #
-# Autor: Jose Guillermo Moreu (jgmoreu@gmail.com)
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 

@@ -8,10 +8,22 @@
 # - Cambiar entre entornos dev y pre  
 # - Validar configuración de entorno
 #
-# Autor: Sistema de Scripts Modular
+# 🚨 ESTADO: DESHABILITADO PARA PROYECTO GURU99
+# Este proyecto solo usa producción, por lo que esta funcionalidad está
+# comentada pero preservada para uso futuro.
+#
+# PARA HABILITAR:
+# 1. Cambiar MULTIPLE_ENVIRONMENTS=true en config.sh
+# 2. Descomentar todas las funciones abajo
+# 3. Configurar URLs de entornos en config.sh
+#
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 
+# 🚨 TODAS LAS FUNCIONES ESTÁN COMENTADAS - DESCOMMENTAR PARA HABILITAR
+
+<<'ENVIRONMENT_FUNCTIONS_COMMENTED'
 # Función para detectar el entorno actual desde el archivo .env
 detect_environment() {
     if [ ! -f ".env" ]; then
@@ -204,4 +216,12 @@ restore_env_file() {
         show_error "No se encontró backup de .env para restaurar"
         return 1
     fi
+}
+ENVIRONMENT_FUNCTIONS_COMMENTED
+
+# 💡 FUNCIÓN STUB PARA COMPATIBILIDAD
+# Esta función vacía mantiene la compatibilidad mientras el módulo está deshabilitado
+show_current_environment() {
+    # Función stub - no hace nada cuando MULTIPLE_ENVIRONMENTS=false
+    return 0
 }

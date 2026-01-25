@@ -11,7 +11,7 @@
 # - Ejecución de tests
 # - Reportes finales
 #
-# Autor: Jose Guillermo Moreu (jgmoreu@gmail.com)
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 
@@ -98,7 +98,15 @@ handle_git_operations() {
 
 # Función para manejar operaciones de entorno
 handle_environment_operations() {
-    # Cambio de entorno (dev/pre)
+    # Verificar si la gestión de múltiples entornos está habilitada
+    if [ "$MULTIPLE_ENVIRONMENTS" = "false" ]; then
+        show_info "🌍 Este proyecto no tiene varios entornos configurados. Saltando gestión de entornos..."
+        show_status "Usando configuración de producción única"
+        echo ""
+        return 0
+    fi
+    
+    # Cambio de entorno (dev/pre) - Solo se ejecuta si MULTIPLE_ENVIRONMENTS=true
     handle_environment_change
 }
 

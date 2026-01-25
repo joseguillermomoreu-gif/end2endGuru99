@@ -6,7 +6,7 @@
 # Este módulo define todos los colores y utilidades para mejorar la presentación
 # visual del script en la terminal.
 #
-# Autor: Jose Guillermo Moreu (jgmoreu@gmail.com) 
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com) 
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 

@@ -9,7 +9,7 @@
 # - Comandos útiles para ejecución manual
 # - Limpieza final
 #
-# Autor: Jose Guillermo Moreu (jgmoreu@gmail.com)
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 

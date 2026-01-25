@@ -6,7 +6,7 @@
 # Este archivo contiene todas las constantes y configuración global
 # para la gestión de tests End2EndTests.
 #
-# Autor: Sistema de Scripts Modular
+# Autor: Jose Guillermo Moreu (joseguillermomoreu@gmail.com)
 # Última actualización: $(date '+%d de %B de %Y')
 # =============================================================================
 
@@ -24,25 +24,24 @@ export USED_CUSTOM_TAG=""
 
 # Configuración de tags de tests por defecto
 export DEFAULT_TAGS=(
-    "@GIT_MASTER_COMMENTS:Comentarios Vanitatis (9.0m, 1w)"
-    "@GIT_MASTER_JARVIS:Sistema Jarvis (3w)"
-    "@GIT_MASTER_LEGACY:Sistema Legacy (3w)"
-    "@GIT_MASTER_OTROS:Tests otros variados (3w)"
-    "@GIT_MASTER_PORTADA_EC:3 balcones EC (1w)"
-    "@GIT_MASTER_PORTADA_VA:3 balcones VA (1w)"
-    "@GIT_MASTER_PORTADA_ALI:3 balcones ALI (1w)"
-    "@GIT_COMMENTS_INICIALES:Setup comentarios (28 tests, ~3.5m)"
-    "@GIT_COMENTARIOS_EC:Comentarios EC completos (29 tests)"
-    "@GIT_COMENTARIOS_VA:Comentarios VA completos"
-    "@GIT_COMENTARIOS_ALI:Comentarios ALI completos"
-    "@GIT_PORTADA_.*_ACCESS:Setup portadas (111 tests, ~27m con 2w)"
-    "@GIT_PORTADA_.*ALI_01:Portadas ALI (24 tests, ~18.7m)"
-    "@GIT_JARVIS:Jarvis completo (recomendado: 9w)"
-    "@GIT_LEGACY:Legacy completo (recomendado: 11w)"
-    "@GIT_OTROS:Otros completo (recomendado: 6w)"
-    "@GIT_OTROS_USER:User Area específico"
-    "@GIT_OTROS_SEC:Secciones específico"
-    "@GIT_OTROS_ECPREV:EC Premium específico"
+    "@smoke:Tests de humo principales (rápidos)"
+    "@regression:Tests de regresión completos"
+    "@login:Tests de autenticación y login"
+    "@customer:Tests de gestión de clientes"
+    "@navigation:Tests de navegación web"
+    "@forms:Tests de formularios"
+    "@ui:Tests de interfaz de usuario"
+    "@api:Tests de API endpoints"
+    "@integration:Tests de integración"
+    "@ppia:Tests PPIA autogenerados"
+    "tests/ppia/:Todos los tests PPIA"
+    "tests/login/:Tests de directorio login"
+    "tests/customer/:Tests de directorio customer"
+    "tests/home/:Tests de directorio home"
+    "'crear nuevo customer':Tests con texto específico"
+    "'validacion':Tests de validación"
+    "'titulo':Tests que validen títulos"
+    ".*guru99.*:Regex para tests de Guru99"
 )
 
 # Configuración de workers permitidos
@@ -52,8 +51,15 @@ export MAX_WORKERS=16
 # Configuración de entornos
 export ENV_DEV="dev"
 export ENV_PRE="pre"
-export ENV_DEV_DOMAIN="elconfidencial.dev"
-export ENV_PRE_DOMAIN="pre.elconfidencial.com"
+export ENV_DEV_DOMAIN="demo.guru99.com"
+export ENV_PRE_DOMAIN="demo.guru99.com"
+
+# Control de gestión de múltiples entornos
+# NOTA: Este proyecto solo usa producción. Para habilitar gestión de entornos:
+# 1. Cambiar MULTIPLE_ENVIRONMENTS=true
+# 2. Descomentar funciones en environment.sh
+# 3. Configurar URLs de entornos arriba
+export MULTIPLE_ENVIRONMENTS=false
 
 # Archivos temporales
 export TEMP_SCRIPT_DIR="/tmp"
