@@ -86,6 +86,28 @@ export default defineConfig({
       dependencies: [],
     },
 
+    // NO LOGIN TESTS - projects
+    {
+      name: 'No Login Tests - Chrome',
+      testMatch: /.*\.nologin\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false
+      },
+      dependencies: [],
+    },
+    {
+      name: 'No Login Tests - Firefox',
+      testMatch: /.*\.nologin\.spec\.ts/,
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: VIEW_NORMAL,
+        isMobile: false
+      },
+      dependencies: [],
+    },
+
     // {
     //   name: 'webkit',
     //   testMatch: /.*web.spec.ts/,
