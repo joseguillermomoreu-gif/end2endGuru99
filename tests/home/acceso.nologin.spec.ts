@@ -7,7 +7,6 @@ const INFO_TEST_HOME_ACCESS = {
   tag: `@HOME_ACCESS`, 
   annotation: [{ type: 'doc', description: 'Verificar acceso correcto a la página principal de Guru99 Bank' }] 
 };
-
 test('Un usuario puede acceder a la página principal de Guru99 Bank', INFO_TEST_HOME_ACCESS, async ({ page }) => {
 
   await test.step("When: Un usuario accede a la página principal de Guru99 Bank", async () => {

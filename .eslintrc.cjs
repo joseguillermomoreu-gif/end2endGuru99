@@ -9,6 +9,9 @@ module.exports = {
         'max-lines': ["error", {"max": 120}],
         "max-lines-per-function": ["error", 15],
         'playwright/expect-expect': 'off',
-        'playwright/no-nth-methods': 'off'
+        'playwright/no-nth-methods': 'off',
+        // Reglas de indentación
+        'indent': ['error', 4, { 'SwitchCase': 1 }],
+        '@typescript-eslint/indent': ['error', 4]
     }
 };
