@@ -63,7 +63,7 @@ test('Validar que los campos obligatorios son requeridos', INFO_TEST_REQUIRED, a
         await customerNew.submitFormAndCheckAlert(page, 'please fill all fields');
     });
     await test.step("Then: el formulario no se envía y permanece visible", async () => {
-        await customerNew.checkFormStaysVisible(page);
+        await customerNew.isFormVisible(page);
     });
 });
 
@@ -98,7 +98,6 @@ for (const validationCase of FIELD_VALIDATION_DATA) {
         });
         await test.step(`Then: aparece alert de validación en el formulario: ${validationCase.expectedError}`, async () => {
             await customerNew.checkErrorText(page, validationCase.expectedError);
-            //await customerNew.submitFormAndCheckAlert(page, 'please fill all fields');
         });
     });
 }

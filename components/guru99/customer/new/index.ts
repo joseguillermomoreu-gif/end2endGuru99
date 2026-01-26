@@ -3,20 +3,13 @@ import * as selectors from "./selectors";
 
 export async function isFormVisible(page: Page) {
     await expect(page.locator(selectors.nameInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.dobInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.addressTextareaLocator)).toBeVisible();
-    await expect(page.locator(selectors.cityInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.stateInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.pinInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.telephoneInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.emailInputLocator)).toBeVisible();
-    await expect(page.locator(selectors.passwordInputLocator)).toBeVisible();
     await expect(page.locator(selectors.submitButtonLocator)).toBeVisible();
 }
 
 export async function fillFieldValue(page: Page, field: string, value: string) {
     const locator = selectors.fieldMap[field];
     if (locator) {
+        await expect(page.locator(locator)).toBeVisible();
         await page.locator(locator).fill(value);
         await expect(page.locator(locator)).toHaveValue(value);
     }
@@ -77,13 +70,6 @@ export async function checkConfirmationTable(page: Page, expectedName: string, e
     expect(tableText).toContain(expectedPin);
     expect(tableText).toContain(expectedTelephone);
     expect(tableText).toContain(expectedEmail);
-}
-
-export async function checkFormStaysVisible(page: Page) {
-    const submitButton = page.locator(selectors.submitButtonLocator);
-    await expect(submitButton).toBeVisible();
-    // Verificar que seguimos en la página del formulario
-    await expect(page.locator(selectors.nameInputLocator)).toBeVisible();
 }
 
 export async function checkEmptyForm(page: Page) {

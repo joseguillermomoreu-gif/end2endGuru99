@@ -1,8 +1,9 @@
 import { Page, expect } from "@playwright/test";
 import * as selectors from "./selectors";
 
+const env = process.env;
 export async function gotoHome(page: Page) {
-    await page.goto('https://demo.guru99.com/V4/manager/Managerhomepage.php');
+    await page.goto(`${env.baseUrl}${env.domain}/${env.version}/manager/Managerhomepage.php`);
 }
 
 export async function checkTitle(page: Page) {
