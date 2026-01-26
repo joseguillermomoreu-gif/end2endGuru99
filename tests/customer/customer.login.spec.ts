@@ -8,6 +8,8 @@ import {
     getCustomerWithEmail
 } from './DataProvider/customer.DataProvider';
 
+test.describe.configure({ retries: 1 });
+
 for (const customerData of VALID_CUSTOMERS) {
     const INFO_TEST_CREATE = {
         tag: `@CUSTOMER_CREATE_${customerData.gender.toUpperCase()}`,

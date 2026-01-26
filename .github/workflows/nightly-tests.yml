@@ -1,0 +1,220 @@
+# GitHub Actions - Tests E2E Nocturnos Guru99 Bank
+name: 🌙 Nightly E2E Tests
+
+on:
+  # Programación nocturna a las 03:00 UTC (04:00 España)
+  schedule:
+    - cron: '0 3 * * *'
+
+  # Ejecución manual con opciones
+  workflow_dispatch:
+    inputs:
+      test_suite:
+        description: 'Suite de tests a ejecutar'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - customer-only
+          - ppia-only
+
+      browser:
+        description: 'Navegador para tests'
+        required: true
+        default: 'chrome'
+        type: choice
+        options:
+          - chrome
+          - firefox
+          - both
+
+  # Ejecución en push a main
+  push:
+    branches: [ master ]
+
+env:
+  baseUrl: "https://demo.guru99.com"
+  testUser: "mngr652417"
+  testPass: "UhEpYne"
+
+jobs:
+  # ========================================
+  # SETUP - AUTENTICACIÓN
+  # ========================================
+  setup:
+    name: 🔐 Setup Authentication
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Generate auth state
+        run: npx playwright test --project="Setup Authentication"
+
+      - name: Upload auth state
+        uses: actions/upload-artifact@v4
+        with:
+          name: auth-state
+          path: playwright/.auth/
+          retention-days: 1
+
+  # ========================================
+  # TESTS CUSTOMER (LOGIN REQUIRED)
+  # ========================================
+  test-customer:
+    name: 🔑 Customer Tests
+    runs-on: ubuntu-latest
+    needs: setup
+    timeout-minutes: 30
+    if: |
+      github.event.inputs.test_suite == 'all' ||
+      github.event.inputs.test_suite == 'customer-only' ||
+      github.event_name != 'workflow_dispatch'
+
+    strategy:
+      matrix:
+        browser:
+          - ${{ github.event.inputs.browser == 'both' && fromJson('["chrome", "firefox"]') || (github.event.inputs.browser || 'chrome') }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Download auth state
+        uses: actions/download-artifact@v4
+        with:
+          name: auth-state
+          path: playwright/.auth/
+
+      - name: Run Customer Tests - ${{ matrix.browser }}
+        run: |
+          if [ "${{ matrix.browser }}" = "firefox" ]; then
+            npx playwright test --project="Login Tests Admin - Firefox"
+          else
+            npx playwright test --project="Login Tests Admin - Chrome"
+          fi
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: customer-results-${{ matrix.browser }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  # ========================================
+  # TESTS PPIA (NO LOGIN)
+  # ========================================
+  test-ppia:
+    name: 🤖 PPIA Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    if: |
+      github.event.inputs.test_suite == 'all' ||
+      github.event.inputs.test_suite == 'ppia-only' ||
+      github.event_name != 'workflow_dispatch'
+
+    strategy:
+      matrix:
+        browser:
+          - ${{ github.event.inputs.browser == 'both' && fromJson('["chrome", "firefox"]') || (github.event.inputs.browser || 'chrome') }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install --with-deps
+
+      - name: Run PPIA Tests - ${{ matrix.browser }}
+        run: |
+          if [ "${{ matrix.browser }}" = "firefox" ]; then
+            npx playwright test --project="Test PPIA - Firefox"
+          else
+            npx playwright test --project="Test PPIA - Chrome"
+          fi
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ppia-results-${{ matrix.browser }}
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 7
+
+  # ========================================
+  # REPORTE CONSOLIDADO
+  # ========================================
+  report:
+    name: 📊 Generate Report
+    runs-on: ubuntu-latest
+    needs: [test-customer, test-ppia]
+    if: always()
+
+    steps:
+      - name: Download all results
+        uses: actions/download-artifact@v4
+        with:
+          path: all-results/
+
+      - name: Generate report summary
+        run: |
+          echo "## 🌙 Nightly Test Results - $(date '+%d/%m/%Y %H:%M')" > summary.md
+          echo "**Branch:** ${{ github.ref_name }}" >> summary.md
+          echo "**Trigger:** ${{ github.event_name }}" >> summary.md
+          echo "" >> summary.md
+
+          customer_count=$(find all-results/ -name "*customer*" -type d | wc -l)
+          ppia_count=$(find all-results/ -name "*ppia*" -type d | wc -l)
+
+          echo "### 📈 Resultados:" >> summary.md
+          echo "- 🔑 Customer Tests: $customer_count execuciones" >> summary.md
+          echo "- 🤖 PPIA Tests: $ppia_count execuciones" >> summary.md
+          echo "" >> summary.md
+          echo "📋 [Ver detalles completos](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
+
+      - name: Upload consolidated report
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report-$(date +%Y%m%d)
+          path: |
+            summary.md
+            all-results/
+          retention-days: 30
