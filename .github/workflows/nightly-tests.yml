@@ -29,7 +29,7 @@ on:
           - firefox
           - both
 
-  # Ejecución en push a main
+  # Ejecución en push a master
   push:
     branches: [ master ]
 
@@ -119,16 +119,6 @@ jobs:
             npx playwright test --project="Login Tests Admin - Chrome"
           fi
 
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: customer-results-${{ matrix.browser }}
-          path: |
-            test-results/
-            playwright-report/
-          retention-days: 7
-
   # ========================================
   # TESTS PPIA (NO LOGIN)
   # ========================================
@@ -168,53 +158,3 @@ jobs:
           else
             npx playwright test --project="Test PPIA - Chrome"
           fi
-
-      - name: Upload results
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ppia-results-${{ matrix.browser }}
-          path: |
-            test-results/
-            playwright-report/
-          retention-days: 7
-
-  # ========================================
-  # REPORTE CONSOLIDADO
-  # ========================================
-  report:
-    name: 📊 Generate Report
-    runs-on: ubuntu-latest
-    needs: [test-customer, test-ppia]
-    if: always()
-
-    steps:
-      - name: Download all results
-        uses: actions/download-artifact@v4
-        with:
-          path: all-results/
-
-      - name: Generate report summary
-        run: |
-          echo "## 🌙 Nightly Test Results - $(date '+%d/%m/%Y %H:%M')" > summary.md
-          echo "**Branch:** ${{ github.ref_name }}" >> summary.md
-          echo "**Trigger:** ${{ github.event_name }}" >> summary.md
-          echo "" >> summary.md
-
-          customer_count=$(find all-results/ -name "*customer*" -type d | wc -l)
-          ppia_count=$(find all-results/ -name "*ppia*" -type d | wc -l)
-
-          echo "### 📈 Resultados:" >> summary.md
-          echo "- 🔑 Customer Tests: $customer_count execuciones" >> summary.md
-          echo "- 🤖 PPIA Tests: $ppia_count execuciones" >> summary.md
-          echo "" >> summary.md
-          echo "📋 [Ver detalles completos](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})" >> summary.md
-
-      - name: Upload consolidated report
-        uses: actions/upload-artifact@v4
-        with:
-          name: test-report-$(date +%Y%m%d)
-          path: |
-            summary.md
-            all-results/
-          retention-days: 30
