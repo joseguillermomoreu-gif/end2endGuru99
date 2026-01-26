@@ -7,7 +7,7 @@ stages:
 
 variables:
   NODE_VERSION: "20"
-  baseUrl: "https://demo.guru99.com"
+  baseUrl: "https://demo.guru99."
   testUser: "mngr652417"
   testPass: "UhEpYne"
 
@@ -127,20 +127,20 @@ generate-report:
     - |
       cat << EOF > test-report.md
       # 🌙 Reporte Tests Nocturnos - $(date '+%d/%m/%Y %H:%M')
-      
-      **Pipeline:** $CI_PIPELINE_ID  
-      **Branch:** $CI_COMMIT_REF_NAME  
-      **Commit:** $CI_COMMIT_SHORT_SHA  
-      **Trigger:** $CI_PIPELINE_SOURCE  
-      
+
+      **Pipeline:** $CI_PIPELINE_ID
+      **Branch:** $CI_COMMIT_REF_NAME
+      **Commit:** $CI_COMMIT_SHORT_SHA
+      **Trigger:** $CI_PIPELINE_SOURCE
+
       ## 📈 Resumen
-      - 🔑 Customer Tests: Chrome + Firefox  
-      - 🤖 PPIA Tests: Chrome + Firefox  
-      
-      ## 🔗 Enlaces  
+      - 🔑 Customer Tests: Chrome + Firefox
+      - 🤖 PPIA Tests: Chrome + Firefox
+
+      ## 🔗 Enlaces
       - [Ver Pipeline Completo]($CI_PIPELINE_URL)
       - [Ver Commit]($CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA)
-      
+
       ---
       *Generado automáticamente - $(date)*
       EOF
