@@ -1,4 +1,4 @@
-# 🔧 Workflows CI/CD - Tests E2E Nocturnos
+# 🔧 Workflows CI/CD - Tests E2E Simplificados
 
 ## 📋 Configuración Automática
 
@@ -27,13 +27,17 @@ git push origin master  # ← Pipelines activados
 - 🔄 **En push/merge a master**
 - 🎛️ **Manualmente** desde GitHub UI
 
+### Fases de Tests:
+1. **🔑 QA Tests** - Setup auth + Customer tests (21 tests)
+2. **🤖 PPIA Tests** - Tests generados automáticamente
+
 ### Ejecución Manual:
 1. Ir a **Actions** en GitHub
 2. Seleccionar **🌙 Nightly E2E Tests** 
 3. Click **Run workflow**
 4. Elegir branch: `master`
 5. Elegir opciones:
-   - **Test Suite**: `all` | `customer-only` | `ppia-only`
+   - **Test Suite**: `both` | `qa-only` | `ppia-only`
    - **Browser**: `chrome` | `firefox` | `both`
 
 ## 🦊 GitLab CI/CD
@@ -47,10 +51,13 @@ git push origin master  # ← Pipelines activados
    - **Cron Timezone**: `Europe/Madrid`
    - **Target Branch**: `master` ⚠️ **IMPORTANTE**
 
+### Fases de Tests:
+1. **Stage qa-tests** - QA Tests con autenticación
+2. **Stage ppia-tests** - Tests PPIA sin autenticación
+
 ### Variables del Schedule (Opcional):
 ```yaml
 BROWSER: "both"      # chrome | firefox | both  
-TEST_SUITE: "all"    # all | customer | ppia
 ```
 
 ### Ejecución Manual:
@@ -61,24 +68,18 @@ TEST_SUITE: "all"    # all | customer | ppia
 
 ## 📊 Resultados
 
-### Ver Resultados:
-- **GitHub**: **Actions** > **Workflow ejecutado** > Ver logs de cada job
-- **GitLab**: **CI/CD** > **Pipelines** > **Pipeline ejecutado** > Detalles por job
+### Ver Estado:
+- **✅ Verde**: Todos los tests pasaron
+- **❌ Rojo**: Algún test falló
 
-### Logs Disponibles:
-- ✅ **Passing tests**: Verde con detalles
-- ❌ **Failing tests**: Rojo con errores específicos
-- ⚠️ **Setup issues**: Problemas de autenticación
+### Ver Detalles:
+- **GitHub**: **Actions** > **Workflow** > **Job** > Ver logs específicos
+- **GitLab**: **Pipelines** > **Pipeline** > **Job** > Ver logs específicos
 
-## 🔔 Notificaciones
-
-### GitHub:
-- Estado visible en **Actions**
-- Emails en fallos (si configurado en repo settings)
-
-### GitLab:
-- Estado visible en **CI/CD > Pipelines**
-- Notificaciones Slack/Teams (si configurado)
+### Jobs Independientes:
+Cada job es completamente independiente:
+- **QA Tests**: Hace su propio setup + ejecuta customer tests
+- **PPIA Tests**: Va directo a tests sin dependencias
 
 ## ⚙️ Personalización
 
@@ -90,13 +91,6 @@ schedule:
 
 # GitLab: Schedules UI
 Interval Pattern: "0 2 * * *"
-```
-
-### Cambiar Branch:
-```yaml
-# Si quisieras ejecutar desde develop:
-push:
-  branches: [ develop ]  # En lugar de master
 ```
 
 ### Cambiar Variables:
@@ -119,19 +113,20 @@ git push origin master
 # 2. (GitLab) Configurar Schedule en UI
 Settings > CI/CD > Schedules > New Schedule
 
-# 3. Verificar primera ejecución
+# 3. Ver primera ejecución
 # GitHub: Actions
 # GitLab: CI/CD > Pipelines
 ```
 
-### Tests Locales (Opcional):
+### Tests Locales:
 ```bash
-# Para probar antes del merge:
-npm ci
-npx playwright install --with-deps
+# QA Tests:
 npx playwright test --project="Setup Authentication"
 npx playwright test --project="Login Tests Admin - Chrome"
+
+# PPIA Tests:
+npx playwright test --project="Test PPIA - Chrome"
 ```
 
 ---
-*Pipeline simplificado develop → master - Enero 2026*
+*Pipeline máximo simplificado - Solo verde/rojo - Enero 2026*

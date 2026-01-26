@@ -1,12 +1,11 @@
-# GitLab CI/CD - Tests E2E Nocturnos Guru99 Bank
+# GitLab CI/CD - Tests E2E Simplificados
 stages:
-  - setup
-  - test-customer
-  - test-ppia
+  - qa-tests
+  - ppia-tests
 
 variables:
   NODE_VERSION: "20"
-  baseUrl: "https://demo.guru99."
+  baseUrl: "https://demo.guru99.com"
   testUser: "mngr652417"
   testPass: "UhEpYne"
 
@@ -34,42 +33,26 @@ workflow:
       - node_modules/
 
 # ================================================
-# SETUP - AUTENTICACIÓN
+# QA TESTS (CON LOGIN)
 # ================================================
-setup-auth:
+qa-tests-chrome:
   <<: *base_template
-  stage: setup
+  stage: qa-tests
   script:
-    - echo "🔐 Generando estado de autenticación..."
+    - echo "🔑 Ejecutando QA Tests (Setup + Customer) - Chrome"
     - npx playwright test --project="Setup Authentication"
-  artifacts:
-    expire_in: 1 hour
-    paths:
-      - playwright/.auth/
-
-# ================================================
-# TESTS CUSTOMER CON LOGIN
-# ================================================
-test-customer-chrome:
-  <<: *base_template
-  stage: test-customer
-  dependencies:
-    - setup-auth
-  script:
-    - echo "🔑 Ejecutando Customer Tests - Chrome"
     - npx playwright test --project="Login Tests Admin - Chrome"
   rules:
     - if: $BROWSER == "firefox"
       when: never
     - when: always
 
-test-customer-firefox:
+qa-tests-firefox:
   <<: *base_template
-  stage: test-customer
-  dependencies:
-    - setup-auth
+  stage: qa-tests
   script:
-    - echo "🔑 Ejecutando Customer Tests - Firefox"
+    - echo "🔑 Ejecutando QA Tests (Setup + Customer) - Firefox"
+    - npx playwright test --project="Setup Authentication"
     - npx playwright test --project="Login Tests Admin - Firefox"
   rules:
     - if: $BROWSER == "chrome"
@@ -77,11 +60,11 @@ test-customer-firefox:
     - when: always
 
 # ================================================
-# TESTS PPIA GENERADOS
+# PPIA TESTS (SIN LOGIN)
 # ================================================
-test-ppia-chrome:
+ppia-tests-chrome:
   <<: *base_template
-  stage: test-ppia
+  stage: ppia-tests
   script:
     - echo "🤖 Ejecutando PPIA Tests - Chrome"
     - npx playwright test --project="Test PPIA - Chrome"
@@ -90,9 +73,9 @@ test-ppia-chrome:
       when: never
     - when: always
 
-test-ppia-firefox:
+ppia-tests-firefox:
   <<: *base_template
-  stage: test-ppia
+  stage: ppia-tests
   script:
     - echo "🤖 Ejecutando PPIA Tests - Firefox"
     - npx playwright test --project="Test PPIA - Firefox"
@@ -113,4 +96,3 @@ test-ppia-firefox:
 #    - Target Branch: master
 #    - Variables (opcional):
 #      * BROWSER: "both" (para ejecutar chrome y firefox)
-#      * TEST_SUITE: "all" (para ejecutar todo)

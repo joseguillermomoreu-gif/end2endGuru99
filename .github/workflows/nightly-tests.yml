@@ -1,4 +1,4 @@
-# GitHub Actions - Tests E2E Nocturnos Guru99 Bank
+# GitHub Actions - Tests E2E Simplificados
 name: 🌙 Nightly E2E Tests
 
 on:
@@ -12,11 +12,11 @@ on:
       test_suite:
         description: 'Suite de tests a ejecutar'
         required: true
-        default: 'all'
+        default: 'both'
         type: choice
         options:
-          - all
-          - customer-only
+          - both
+          - qa-only
           - ppia-only
 
       browser:
@@ -34,55 +34,21 @@ on:
     branches: [ master ]
 
 env:
-  baseUrl: "https://demo.guru99."
+  baseUrl: "https://demo.guru99.com"
   testUser: "mngr652417"
   testPass: "UhEpYne"
 
 jobs:
   # ========================================
-  # SETUP - AUTENTICACIÓN
+  # QA TESTS (CON LOGIN)
   # ========================================
-  setup:
-    name: 🔐 Setup Authentication
+  qa-tests:
+    name: 🔑 QA Tests
     runs-on: ubuntu-latest
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
-
-      - name: Generate auth state
-        run: npx playwright test --project="Setup Authentication"
-
-      - name: Upload auth state
-        uses: actions/upload-artifact@v4
-        with:
-          name: auth-state
-          path: playwright/.auth/
-          retention-days: 1
-
-  # ========================================
-  # TESTS CUSTOMER (LOGIN REQUIRED)
-  # ========================================
-  test-customer:
-    name: 🔑 Customer Tests
-    runs-on: ubuntu-latest
-    needs: setup
     timeout-minutes: 30
     if: |
-      github.event.inputs.test_suite == 'all' ||
-      github.event.inputs.test_suite == 'customer-only' ||
+      github.event.inputs.test_suite == 'both' ||
+      github.event.inputs.test_suite == 'qa-only' ||
       github.event_name != 'workflow_dispatch'
 
     strategy:
@@ -105,14 +71,10 @@ jobs:
       - name: Install Playwright
         run: npx playwright install --with-deps
 
-      - name: Download auth state
-        uses: actions/download-artifact@v4
-        with:
-          name: auth-state
-          path: playwright/.auth/
-
-      - name: Run Customer Tests - ${{ matrix.browser }}
+      - name: Run QA Tests - ${{ matrix.browser }}
         run: |
+          # Setup auth + Customer tests en un solo paso
+          npx playwright test --project="Setup Authentication"
           if [ "${{ matrix.browser }}" = "firefox" ]; then
             npx playwright test --project="Login Tests Admin - Firefox"
           else
@@ -120,14 +82,14 @@ jobs:
           fi
 
   # ========================================
-  # TESTS PPIA (NO LOGIN)
+  # PPIA TESTS (SIN LOGIN)
   # ========================================
-  test-ppia:
+  ppia-tests:
     name: 🤖 PPIA Tests
     runs-on: ubuntu-latest
     timeout-minutes: 45
     if: |
-      github.event.inputs.test_suite == 'all' ||
+      github.event.inputs.test_suite == 'both' ||
       github.event.inputs.test_suite == 'ppia-only' ||
       github.event_name != 'workflow_dispatch'
 
