@@ -8,6 +8,8 @@ stages:
 variables:
   NODE_VERSION: "20"
   baseUrl: "https://demo.guru99.com"
+  testUser: "mngr652417"
+  testPass: "UhEpYne"
 
 # Configuración de cuándo ejecutar el pipeline
 workflow:
@@ -16,8 +18,8 @@ workflow:
     - if: $CI_PIPELINE_SOURCE == "schedule"
     # Ejecución manual
     - if: $CI_PIPELINE_SOURCE == "web"
-    # Push a main/master
-    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "master"
+    # Push a master
+    - if: $CI_COMMIT_BRANCH == "master"
 
 # ================================================
 # TEMPLATE BASE PARA TODOS LOS JOBS
@@ -125,20 +127,20 @@ generate-report:
     - |
       cat << EOF > test-report.md
       # 🌙 Reporte Tests Nocturnos - $(date '+%d/%m/%Y %H:%M')
-
-      **Pipeline:** $CI_PIPELINE_ID
-      **Branch:** $CI_COMMIT_REF_NAME
-      **Commit:** $CI_COMMIT_SHORT_SHA
-      **Trigger:** $CI_PIPELINE_SOURCE
-
+      
+      **Pipeline:** $CI_PIPELINE_ID  
+      **Branch:** $CI_COMMIT_REF_NAME  
+      **Commit:** $CI_COMMIT_SHORT_SHA  
+      **Trigger:** $CI_PIPELINE_SOURCE  
+      
       ## 📈 Resumen
-      - 🔑 Customer Tests: Chrome + Firefox
-      - 🤖 PPIA Tests: Chrome + Firefox
-
-      ## 🔗 Enlaces
+      - 🔑 Customer Tests: Chrome + Firefox  
+      - 🤖 PPIA Tests: Chrome + Firefox  
+      
+      ## 🔗 Enlaces  
       - [Ver Pipeline Completo]($CI_PIPELINE_URL)
       - [Ver Commit]($CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA)
-
+      
       ---
       *Generado automáticamente - $(date)*
       EOF
@@ -161,7 +163,7 @@ generate-report:
 #    - Description: "Tests E2E Nocturnos 03:00h"
 #    - Interval Pattern: "0 3 * * *"
 #    - Cron Timezone: Europe/Madrid
-#    - Target Branch: main
+#    - Target Branch: master
 #    - Variables (opcional):
 #      * BROWSER: "both" (para ejecutar chrome y firefox)
 #      * TEST_SUITE: "all" (para ejecutar todo)

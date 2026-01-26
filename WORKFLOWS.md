@@ -2,127 +2,137 @@
 
 ## 📋 Configuración Automática
 
-Los workflows están configurados para ejecutarse automáticamente cada noche a las **03:00 UTC** (04:00 hora española).
+Los workflows están configurados para ejecutarse automáticamente cada noche a las **03:00 UTC** (04:00 hora española) **SOLO en la rama master**.
+
+## 🌳 Flujo de Branches
+
+### Estructura:
+```
+develop  ← Desarrollo activo (NO ejecuta pipelines)
+  ↓ merge
+master   ← Pipeline CI/CD activado aquí
+```
+
+### Para Activar Tests Nocturnos:
+```bash
+git checkout master
+git merge develop  
+git push origin master  # ← Pipelines activados
+```
 
 ## 🚀 GitHub Actions
 
 ### Configuración Automática:
-```yaml
-# Se ejecuta automáticamente:
-- Diariamente a las 03:00 UTC
-- En push a main/master
-- Manualmente desde GitHub UI
-```
+- ⏰ **Diariamente a las 03:00 UTC** desde `master`
+- 🔄 **En push/merge a master**
+- 🎛️ **Manualmente** desde GitHub UI
 
 ### Ejecución Manual:
 1. Ir a **Actions** en GitHub
 2. Seleccionar **🌙 Nightly E2E Tests** 
 3. Click **Run workflow**
-4. Elegir opciones:
+4. Elegir branch: `master`
+5. Elegir opciones:
    - **Test Suite**: `all` | `customer-only` | `ppia-only`
    - **Browser**: `chrome` | `firefox` | `both`
 
-### Comandos Locales Equivalentes:
-```bash
-# Customer tests
-npx playwright test --project="Setup Authentication"
-npx playwright test --project="Login Tests Admin - Chrome"
-
-# PPIA tests
-npx playwright test --project="Test PPIA - Chrome"
-```
-
 ## 🦊 GitLab CI/CD
 
-### Configuración del Schedule:
+### Configurar Schedule (Una Sola Vez):
 1. Ir a **Settings > CI/CD > Schedules**
 2. Click **New Schedule**
 3. Configurar:
    - **Description**: `Tests E2E Nocturnos 03:00h`
    - **Interval Pattern**: `0 3 * * *`
    - **Cron Timezone**: `Europe/Madrid`
-   - **Target Branch**: `main`
+   - **Target Branch**: `master` ⚠️ **IMPORTANTE**
 
-### Variables Opcionales:
+### Variables del Schedule (Opcional):
 ```yaml
-BROWSER: "both"      # chrome | firefox | both
+BROWSER: "both"      # chrome | firefox | both  
 TEST_SUITE: "all"    # all | customer | ppia
 ```
 
 ### Ejecución Manual:
 1. Ir a **CI/CD > Pipelines**
 2. Click **Run Pipeline**
-3. Agregar variables si necesario
+3. **Seleccionar branch**: `master` ⚠️
+4. Agregar variables si necesario
 
-## 📊 Resultados y Reportes
+## 📊 Resultados
 
-### Artifacts Generados:
-- **test-results/**: Resultados detallados XML/JSON
-- **playwright-report/**: Reporte HTML interactivo
-- **screenshots/videos**: Capturas y grabaciones de fallos
-
-### Retención:
-- **Resultados diarios**: 7 días
+### Artifacts:
+- **test-results/**: Resultados XML/JSON (7 días)
+- **playwright-report/**: Reporte HTML (7 días)
+- **screenshots/videos**: Capturas de fallos (7 días)
 - **Reportes consolidados**: 30 días
-- **Estados de auth**: 1 día
 
-## 🎯 Suites de Tests
-
-### 🔑 Customer Tests (Login Required)
-```bash
-# 21 tests dinámicos:
-- 2 tests creación válida (male/female)
-- 1 test campos requeridos
-- 16 tests validaciones (formato + longitud)
-- 1 test reset formulario
-- 1 test navegación
-```
-
-### 🤖 PPIA Tests (Generated)
-```bash
-# Tests generados automáticamente:
-- Login exitoso
-- Creación customer válido
-- Validaciones campos obligatorios
-- Validaciones formato incorrecto
-- Validaciones longitud mínima
-```
+### Acceso:
+- **GitHub**: **Actions** > **Workflow ejecutado** > **Artifacts**
+- **GitLab**: **CI/CD** > **Pipelines** > **Pipeline ejecutado** > **Download**
 
 ## 🔔 Notificaciones
 
 ### GitHub:
-- Resultados visibles en **Actions**
-- Emails automáticos en fallos (si configurado)
+- Resultados en **Actions**
+- Emails en fallos (si configurado)
 
 ### GitLab:
 - Resultados en **CI/CD > Pipelines**
-- Integración Slack/Teams disponible
+- Notificaciones Slack/Teams (si configurado)
 
 ## ⚙️ Personalización
 
 ### Cambiar Horario:
 ```yaml
-# GitHub (.github/workflows/nightly-tests.yml)
+# GitHub: .github/workflows/nightly-tests.yml
 schedule:
   - cron: '0 2 * * *'  # 02:00 UTC
 
-# GitLab (UI Schedule)
-Interval Pattern: "0 2 * * *"  # 02:00 UTC
+# GitLab: Schedules UI
+Interval Pattern: "0 2 * * *"
 ```
 
-### Añadir Navegadores:
+### Cambiar Branch:
 ```yaml
-# En matrix strategy:
-browser: ['chrome', 'firefox', 'safari']
+# Si quisieras ejecutar desde develop:
+push:
+  branches: [ develop ]  # En lugar de master
 ```
 
-### Variables de Entorno:
+### Cambiar Variables:
 ```bash
-# Personalizar en workflows:
-baseUrl: "https://testing.guru99.com"  # Entorno diferente
-testUser: "otroUsuario"
+# En workflows:
+baseUrl: "https://testing.guru99.com"
+testUser: "otroUsuario" 
 testPass: "otraPassword"
 ```
 
+## 🚀 Quick Setup
+
+### Primera Configuración:
+```bash
+# 1. Hacer merge a master para activar
+git checkout master
+git merge develop
+git push origin master
+
+# 2. (GitLab) Configurar Schedule en UI
+Settings > CI/CD > Schedules > New Schedule
+
+# 3. Verificar primera ejecución
+# GitHub: Actions
+# GitLab: CI/CD > Pipelines
+```
+
+### Tests Locales (Opcional):
+```bash
+# Para probar antes del merge:
+npm ci
+npx playwright install --with-deps
+npx playwright test --project="Setup Authentication"
+npx playwright test --project="Login Tests Admin - Chrome"
+```
+
 ---
-*Configuración completa para CI/CD automatizado - Enero 2026*
+*Configuración pipeline develop → master - Enero 2026*
