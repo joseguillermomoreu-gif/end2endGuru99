@@ -34,7 +34,7 @@ on:
     branches: [ master ]
 
 env:
-  baseUrl: "https://demo.guru99.com"
+  baseUrl: "https://demo.guru99."
   testUser: "mngr652417"
   testPass: "UhEpYne"
 
