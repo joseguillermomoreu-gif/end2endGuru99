@@ -1,6 +1,10 @@
 import { Page, expect } from "@playwright/test";
 import * as selectors from "./selectors";
 
+export async function gotoHome(page: Page) {
+    await page.goto('https://demo.guru99.com/V4/manager/Managerhomepage.php');
+}
+
 export async function checkTitle(page: Page) {
     expect(await page.title()).toBe(selectors.titleText);
 }

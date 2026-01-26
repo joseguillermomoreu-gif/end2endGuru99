@@ -37,7 +37,7 @@ export default defineConfig({
     reporter: process.env.LINE_REPORT ? 'line' : [['list'], ['html']],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
-    // Emulates the user locale.
+        // Emulates the user locale.
         locale: 'es-ES',
         // Emulates the user timezone.
         timezoneId: 'Europe/Madrid',
@@ -63,8 +63,18 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
-    // SETUPS
-    // TESTS - projects
+        // SETUPS
+        {
+            name: 'Setup Authentication',
+            testMatch: /.*\/setup\/auth\.guru99\.ts/,
+            use: {
+                ...devices['Desktop Chrome'],
+                viewport: VIEW_NORMAL,
+                isMobile: false
+            },
+        },
+
+        // TESTS - projects
         {
             name: 'Test PPIA - Chrome',
             testMatch: /.*\.generated\.spec\.ts/,
@@ -108,6 +118,30 @@ export default defineConfig({
             dependencies: [],
         },
 
+        // LOGIN TESTS - projects
+        {
+            name: 'Login Tests Admin - Chrome',
+            testMatch: /.*\.login\.spec\.ts/,
+            use: {
+                ...devices['Desktop Chrome'],
+                viewport: VIEW_NORMAL,
+                isMobile: false,
+                storageState: 'playwright/.auth/cms/admin.json'
+            },
+            dependencies: ['Setup Authentication'],
+        },
+        {
+            name: 'Login Tests Admin - Firefox',
+            testMatch: /.*\.login\.spec\.ts/,
+            use: {
+                ...devices['Desktop Firefox'],
+                viewport: VIEW_NORMAL,
+                isMobile: false,
+                storageState: 'playwright/.auth/cms/admin.json'
+            },
+            dependencies: ['Setup Authentication'],
+        },
+
         // {
         //   name: 'webkit',
         //   testMatch: /.*web.spec.ts/,
@@ -127,15 +161,15 @@ export default defineConfig({
         //   use: { ...devices['iPhone 12'] },
         // },
 
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
+        /* Test against branded browsers. */
+        // {
+        //   name: 'Microsoft Edge',
+        //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
+        // },
+        // {
+        //   name: 'Google Chrome',
+        //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
+        // },
     ],
 
     /* Run your local dev server before starting the tests */
