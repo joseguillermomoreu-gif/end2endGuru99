@@ -61,24 +61,23 @@ TEST_SUITE: "all"    # all | customer | ppia
 
 ## 📊 Resultados
 
-### Artifacts:
-- **test-results/**: Resultados XML/JSON (7 días)
-- **playwright-report/**: Reporte HTML (7 días)
-- **screenshots/videos**: Capturas de fallos (7 días)
-- **Reportes consolidados**: 30 días
+### Ver Resultados:
+- **GitHub**: **Actions** > **Workflow ejecutado** > Ver logs de cada job
+- **GitLab**: **CI/CD** > **Pipelines** > **Pipeline ejecutado** > Detalles por job
 
-### Acceso:
-- **GitHub**: **Actions** > **Workflow ejecutado** > **Artifacts**
-- **GitLab**: **CI/CD** > **Pipelines** > **Pipeline ejecutado** > **Download**
+### Logs Disponibles:
+- ✅ **Passing tests**: Verde con detalles
+- ❌ **Failing tests**: Rojo con errores específicos
+- ⚠️ **Setup issues**: Problemas de autenticación
 
 ## 🔔 Notificaciones
 
 ### GitHub:
-- Resultados en **Actions**
-- Emails en fallos (si configurado)
+- Estado visible en **Actions**
+- Emails en fallos (si configurado en repo settings)
 
 ### GitLab:
-- Resultados en **CI/CD > Pipelines**
+- Estado visible en **CI/CD > Pipelines**
 - Notificaciones Slack/Teams (si configurado)
 
 ## ⚙️ Personalización
@@ -135,4 +134,4 @@ npx playwright test --project="Login Tests Admin - Chrome"
 ```
 
 ---
-*Configuración pipeline develop → master - Enero 2026*
+*Pipeline simplificado develop → master - Enero 2026*
