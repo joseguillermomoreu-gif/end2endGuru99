@@ -1,0 +1,169 @@
+# GitLab CI/CD - Tests E2E Nocturnos Guru99 Bank
+stages:
+  - setup
+  - test-customer
+  - test-ppia
+  - report
+
+variables:
+  NODE_VERSION: "20"
+  baseUrl: "https://demo.guru99.com"
+  testUser: "mngr652417"
+  testPass: "UhEpYne"
+
+# Configuración de cuándo ejecutar el pipeline
+workflow:
+  rules:
+    # Programación nocturna (configurar en GitLab UI)
+    - if: $CI_PIPELINE_SOURCE == "schedule"
+    # Ejecución manual
+    - if: $CI_PIPELINE_SOURCE == "web"
+    # Push a master
+    - if: $CI_COMMIT_BRANCH == "master"
+
+# ================================================
+# TEMPLATE BASE PARA TODOS LOS JOBS
+# ================================================
+.base_template: &base_template
+  image: mcr.microsoft.com/playwright:v1.47.0-focal
+  before_script:
+    - npm ci
+    - npx playwright install --with-deps
+  cache:
+    key: "$CI_COMMIT_REF_SLUG-$CI_JOB_NAME"
+    paths:
+      - node_modules/
+      - playwright/.auth/
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - test-results/
+      - playwright-report/
+
+# ================================================
+# SETUP - AUTENTICACIÓN
+# ================================================
+setup-auth:
+  <<: *base_template
+  stage: setup
+  script:
+    - echo "🔐 Generando estado de autenticación..."
+    - npx playwright test --project="Setup Authentication"
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - playwright/.auth/
+
+# ================================================
+# TESTS CUSTOMER CON LOGIN
+# ================================================
+test-customer-chrome:
+  <<: *base_template
+  stage: test-customer
+  dependencies:
+    - setup-auth
+  script:
+    - echo "🔑 Ejecutando Customer Tests - Chrome"
+    - npx playwright test --project="Login Tests Admin - Chrome"
+  rules:
+    - if: $BROWSER == "firefox"
+      when: never
+    - when: always
+
+test-customer-firefox:
+  <<: *base_template
+  stage: test-customer
+  dependencies:
+    - setup-auth
+  script:
+    - echo "🔑 Ejecutando Customer Tests - Firefox"
+    - npx playwright test --project="Login Tests Admin - Firefox"
+  rules:
+    - if: $BROWSER == "chrome"
+      when: never
+    - when: always
+
+# ================================================
+# TESTS PPIA GENERADOS
+# ================================================
+test-ppia-chrome:
+  <<: *base_template
+  stage: test-ppia
+  script:
+    - echo "🤖 Ejecutando PPIA Tests - Chrome"
+    - npx playwright test --project="Test PPIA - Chrome"
+  rules:
+    - if: $BROWSER == "firefox"
+      when: never
+    - when: always
+
+test-ppia-firefox:
+  <<: *base_template
+  stage: test-ppia
+  script:
+    - echo "🤖 Ejecutando PPIA Tests - Firefox"
+    - npx playwright test --project="Test PPIA - Firefox"
+  rules:
+    - if: $BROWSER == "chrome"
+      when: never
+    - when: always
+
+# ================================================
+# REPORTE CONSOLIDADO
+# ================================================
+generate-report:
+  image: alpine:latest
+  stage: report
+  dependencies:
+    - test-customer-chrome
+    - test-customer-firefox
+    - test-ppia-chrome
+    - test-ppia-firefox
+  before_script:
+    - apk add --no-cache bash findutils
+  script:
+    - echo "📊 Generando reporte consolidado..."
+    - |
+      cat << EOF > test-report.md
+      # 🌙 Reporte Tests Nocturnos - $(date '+%d/%m/%Y %H:%M')
+      
+      **Pipeline:** $CI_PIPELINE_ID  
+      **Branch:** $CI_COMMIT_REF_NAME  
+      **Commit:** $CI_COMMIT_SHORT_SHA  
+      **Trigger:** $CI_PIPELINE_SOURCE  
+      
+      ## 📈 Resumen
+      - 🔑 Customer Tests: Chrome + Firefox  
+      - 🤖 PPIA Tests: Chrome + Firefox  
+      
+      ## 🔗 Enlaces  
+      - [Ver Pipeline Completo]($CI_PIPELINE_URL)
+      - [Ver Commit]($CI_PROJECT_URL/-/commit/$CI_COMMIT_SHA)
+      
+      ---
+      *Generado automáticamente - $(date)*
+      EOF
+    - cat test-report.md
+  artifacts:
+    expire_in: 30 days
+    paths:
+      - test-report.md
+    reports:
+      junit: test-results/results.xml
+  rules:
+    - when: always
+
+# ================================================
+# CONFIGURAR PROGRAMACIÓN NOCTURNA
+# ================================================
+# Para configurar la ejecución a las 03:00h:
+# 1. Ir a: Settings > CI/CD > Schedules
+# 2. Crear "New Schedule" con:
+#    - Description: "Tests E2E Nocturnos 03:00h"
+#    - Interval Pattern: "0 3 * * *"
+#    - Cron Timezone: Europe/Madrid
+#    - Target Branch: master
+#    - Variables (opcional):
+#      * BROWSER: "both" (para ejecutar chrome y firefox)
+#      * TEST_SUITE: "all" (para ejecutar todo)

@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Playwright Test Results
+test-results/
+playwright-report/
+playwright/.cache/
+playwright/.auth/
+
+# IDE files
+.vscode/
+!.vscode/settings.json
+# Permitir configuración de workspace pero ignorar personal
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~

@@ -23,6 +23,35 @@ npx playwright install --with-deps
 npx playwright test --help
 ```
 
+## Script de gestión (end2end.sh)
+
+Este proyecto incluye un script wrapper que facilita la ejecución y gestión de tests.
+
+### Configuración inicial
+```bash
+# Dar permisos de ejecución al script
+chmod +x end2end.sh
+```
+
+### Uso del script
+```bash
+# Menú interactivo (recomendado)
+./end2end.sh
+
+# Opciones avanzadas
+./end2end.sh --u           # Actualizar screenshots automáticamente
+./end2end.sh --headed      # Modo headed con selección de navegador
+./end2end.sh --help        # Ver todas las opciones disponibles
+```
+
+### Funcionalidades del script
+- **Menú interactivo**: Selección fácil de tests y configuraciones
+- **Selección de navegador**: En modo headed puedes elegir Chromium, Firefox o ambos
+- **Update screenshots**: Opción `--u` para actualizar snapshots automáticamente
+- **Configuración workers**: Control de paralelización de tests
+- **Logs detallados**: Opción para mostrar logs de éxito
+- **Detección automática**: Encuentra y lista tests disponibles en el proyecto
+
 ## Error al no detectar los tests en IDE
 Se debe ejecutar en la terminal los siguientes comandos:
 1. Cambiar a la versión 20 `nvm use 20`
@@ -49,13 +78,13 @@ For executing tests in a CI environment, ensure that the environment variable LI
 1. Actualizarse en la rama
 1. Construir el contenedor `docker build -t e2e .`
 1. entrar en el contenedor con la actualizacion de los ficheros 
-`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./:/project_root/ e2e /bin/bash`
+`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./:/END2ENDTESTS/ e2e /bin/bash`
    - ejecutar test por fichero `npx playwright test mitest.cms.spec.ts`
    - ejecutar test por tag `npx playwright test --grep @tag`
    - ejecutar test por tags (regex) `npx playwright test --grep "@tag1|@tag2"`
 
 ### Development
-`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./tests:/project_root/tests -v ./components:/project_root/components e2e /bin/bash`
+`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./tests:/END2ENDTESTS/tests -v ./components:/END2ENDTESTS/components e2e /bin/bash`
 comando desarrollando para actualizacion de los components
 - Alinear todo el fichero actual -> ctrl + mayusc + i
 - Para habilitar los permisos cuando pasamos de contenedor a debuggear en IDE `sudo chmod -R 777 test-results && sudo chmod -R 777 playwright-report && sudo chmod -R 777 playwright`
