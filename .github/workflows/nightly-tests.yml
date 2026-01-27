@@ -2,7 +2,7 @@
 name: 🌙 Nightly E2E Tests
 
 on:
-  # Programación nocturna a las 03:00 UTC (04:00 España)
+  # Programación nocturna a las 03:00 UTC (04:00 Esp)
   schedule:
     - cron: '0 3 * * *'
 
