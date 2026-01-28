@@ -88,10 +88,11 @@ ppia-tests-firefox:
 # CONFIGURAR PROGRAMACIÓN NOCTURNA
 # ================================================
 # Para configurar la ejecución a las 03:00h:
+# NOTA: En GitHub Actions se ejecutó a las 06:00 con '0 3 * * *' - revisar zona horaria
 # 1. Ir a: Settings > CI/CD > Schedules
 # 2. Crear "New Schedule" con:
 #    - Description: "Tests E2E Nocturnos 03:00h"
-#    - Interval Pattern: "0 3 * * *"
+#    - Interval Pattern: "0 3 * * *" (revisar si equivale a 03:00 Madrid)
 #    - Cron Timezone: Europe/Madrid
 #    - Target Branch: master
 #    - Variables (opcional):
