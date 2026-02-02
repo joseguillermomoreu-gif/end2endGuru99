@@ -24,8 +24,13 @@ const TEST_PASS = env.testPass || 'UhEpYne';
 
 // HOOK GLOBAL: Setup inicial con login una sola vez
 BeforeAll(async function () {
-  // Crear browser y contexto
-  globalBrowser = await chromium.launch({ headless: false });
+  // Detectar si estamos en CI (GitHub Actions, GitLab, etc.)
+  const isCI = process.env.CI || process.env.GITHUB_ACTIONS || process.env.GITLAB_CI;
+  
+  // Crear browser y contexto con configuración apropiada para el entorno
+  globalBrowser = await chromium.launch({ 
+    headless: isCI ? true : false // headless en CI, headed en local
+  });
   globalContext = await globalBrowser.newContext();
   globalPage = await globalContext.newPage();
 
@@ -35,6 +40,8 @@ BeforeAll(async function () {
   await login.fillPassword(globalPage, TEST_PASS);
   await login.clickLogin(globalPage);
 
+  // Verificar login exitoso usando tu Page Object
+  await globalPage.waitForLoadState('networkidle');
   await home.checkWelcomeMessage(globalPage, TEST_USER);
 });
 
