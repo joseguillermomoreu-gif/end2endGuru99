@@ -12,13 +12,13 @@ export const resetButtonLocator: string = 'input[type="reset"]';
 export const confirmationTableLocator: string = 'table#customer';
 export const homeLinkLocator: string = '.menusubnav a:has-text("Manager")';
 export const fieldMap: { [key: string]: string } = {
-    'name': nameInputLocator,
-    'dob': dobInputLocator,
-    'address': addressTextareaLocator,
-    'city': cityInputLocator,
-    'state': stateInputLocator,
-    'pin': pinInputLocator,
-    'telephone': telephoneInputLocator,
-    'email': emailInputLocator,
-    'password': passwordInputLocator
+  'name': nameInputLocator,
+  'dob': dobInputLocator,
+  'address': addressTextareaLocator,
+  'city': cityInputLocator,
+  'state': stateInputLocator,
+  'pin': pinInputLocator,
+  'telephone': telephoneInputLocator,
+  'email': emailInputLocator,
+  'password': passwordInputLocator
 };
