@@ -13,12 +13,14 @@ on:
       test_suite:
         description: 'Suite de tests a ejecutar'
         required: true
-        default: 'both'
+        default: 'all'
         type: choice
         options:
-          - both
+          - all
           - qa-only
           - ppia-only
+          - cucumber-only
+          - playwright-only
 
       browser:
         description: 'Navegador para tests'
@@ -44,12 +46,13 @@ jobs:
   # QA TESTS (CON LOGIN)
   # ========================================
   qa-tests:
-    name: 🔑 QA Tests
+    name: 🔑 QA Tests (Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 30
     if: |
-      github.event.inputs.test_suite == 'both' ||
+      github.event.inputs.test_suite == 'all' ||
       github.event.inputs.test_suite == 'qa-only' ||
+      github.event.inputs.test_suite == 'playwright-only' ||
       github.event_name != 'workflow_dispatch'
 
     strategy:
@@ -86,12 +89,13 @@ jobs:
   # PPIA TESTS (SIN LOGIN)
   # ========================================
   ppia-tests:
-    name: 🤖 PPIA Tests
+    name: 🤖 PPIA Tests (Playwright)
     runs-on: ubuntu-latest
     timeout-minutes: 45
     if: |
-      github.event.inputs.test_suite == 'both' ||
+      github.event.inputs.test_suite == 'all' ||
       github.event.inputs.test_suite == 'ppia-only' ||
+      github.event.inputs.test_suite == 'playwright-only' ||
       github.event_name != 'workflow_dispatch'
 
     strategy:
@@ -121,3 +125,48 @@ jobs:
           else
             npx playwright test --project="Test PPIA - Chrome"
           fi
+
+  # ========================================
+  # CUCUMBER BDD TESTS
+  # ========================================
+  cucumber-bdd-tests:
+    name: 🥒 Cucumber BDD Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    if: |
+      github.event.inputs.test_suite == 'all' ||
+      github.event.inputs.test_suite == 'cucumber-only' ||
+      github.event_name != 'workflow_dispatch'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright (for browser automation)
+        run: npx playwright install --with-deps
+
+      - name: Run All Cucumber BDD Tests
+        run: npm run test:cucumber:all
+        env:
+          testUser: ${{ env.testUser }}
+          testPass: ${{ env.testPass }}
+          baseUrl: ${{ env.baseUrl }}
+
+      - name: Upload Cucumber Test Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-test-results
+          path: |
+            test-results/
+            reports/
+            *.png
+          retention-days: 30

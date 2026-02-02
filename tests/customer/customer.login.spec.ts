@@ -143,7 +143,8 @@ const INFO_TEST_NAVIGATION = {
 test('Verificar navegación de vuelta al dashboard desde formulario', INFO_TEST_NAVIGATION, async ({ page }) => {
     await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
         await home.gotoHome(page);
-        await home.checkWelcomeMessage(page, process.env.testUser);
+        const user = process.env.testUser;
+        await home.checkWelcomeMessage(page, user || '');
     });
     await test.step("Given: accede al menú lateral de New Customer", async () => {
         await menuLeft.clickNewCustomer(page);
@@ -153,7 +154,8 @@ test('Verificar navegación de vuelta al dashboard desde formulario', INFO_TEST_
         await customerNew.clickHome(page);
     });
     await test.step("Then: se muestra correctamente el dashboard principal", async () => {
-        await home.checkWelcomeMessage(page, process.env.testUser);
+        const user = process.env.testUser;
+        await home.checkWelcomeMessage(page,user || '');
         await menuLeft.isVisible(page);
     });
 });
