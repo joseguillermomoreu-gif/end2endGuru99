@@ -1,0 +1,105 @@
+{
+  "validCustomers": [
+    {
+      "name": "Juan Perez",
+      "gender": "male",
+      "dob": "1992-03-17",
+      "address": "Calle Principal 123",
+      "city": "Madrid",
+      "state": "Madrid",
+      "pin": "280001",
+      "telephone": "123456789",
+      "password": "Test123!"
+    },
+    {
+      "name": "Cristina Garcia",
+      "gender": "female", 
+      "dob": "1988-11-25",
+      "address": "Avenida Central 456",
+      "city": "Barcelona",
+      "state": "Catalunya",
+      "pin": "080001",
+      "telephone": "987654321",
+      "password": "Test456!"
+    },
+    {
+      "name": "Miguel Rodriguez",
+      "gender": "male",
+      "dob": "1990-12-22",
+      "address": "Plaza Mayor 789",
+      "city": "Valencia",
+      "state": "Valencia", 
+      "pin": "460001",
+      "telephone": "555123456",
+      "password": "Test789!"
+    }
+  ],
+  "fieldValidationErrors": {
+    "name": {
+      "specialChars": {
+        "input": "!@#$$%^^&*()_+",
+        "expectedError": "Special characters are not allowed"
+      },
+      "numbers": {
+        "input": "12",
+        "expectedError": "Numbers are not allowed"
+      }
+    },
+    "address": {
+      "specialChars": {
+        "input": "$$$ Calle 123 ###",
+        "expectedError": "Special characters are not allowed"
+      }
+    },
+    "city": {
+      "specialChars": {
+        "input": "1234!@#",
+        "expectedError": "Special characters are not allowed"
+      },
+      "numbers": {
+        "input": "56", 
+        "expectedError": "Numbers are not allowed"
+      }
+    },
+    "state": {
+      "specialChars": {
+        "input": "$$$",
+        "expectedError": "Special characters are not allowed"
+      },
+      "numbers": {
+        "input": "78",
+        "expectedError": "Numbers are not allowed"
+      }
+    },
+    "pin": {
+      "letters": {
+        "input": "abcdef",
+        "expectedError": "Characters are not allowed"
+      },
+      "specialChars": {
+        "input": "abcde!",
+        "expectedError": "Special characters are not allowed"
+      },
+      "tooShort": {
+        "input": "90",
+        "expectedError": "PIN Code must have 6 Digits"
+      }
+    },
+    "telephone": {
+      "specialChars": {
+        "input": "phone!@#",
+        "expectedError": "Special characters are not allowed"
+      },
+      "letters": {
+        "input": "phoneeeeeee",
+        "expectedError": "Characters are not allowed"
+      }
+    },
+    "email": {
+      "invalidFormat": {
+        "input": "correo_invalido@@@",
+        "expectedError": "Email-ID is not valid"
+      }
+    }
+  }
+}

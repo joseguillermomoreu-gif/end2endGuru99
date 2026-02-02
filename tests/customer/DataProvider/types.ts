@@ -6,7 +6,7 @@ export interface CustomerData {
   state: string;
   pin: string;
   telephone: string;
-  email?: string;
+  email: string;
   password: string;
   gender: 'male' | 'female';
 }
