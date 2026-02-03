@@ -33,6 +33,11 @@
     "test:cucumber:customer": "npx cucumber-js features/customer/ --require ./register.js --require step-definitions/customer/customer-bdd.ts --require support/hooks-bdd.ts",
     "test:cucumber:all": "npx cucumber-js features/ --require ./register.js --require step-definitions/customer/customer-bdd.ts --require step-definitions/home/home.steps.ts --require step-definitions/login/login.steps.ts --require support/hooks-bdd.ts",
     "test:cucumber": "npm run test:cucumber:all",
+    "test:playwright:cucumber-setup": "npx playwright test --project=\"Cucumber Setup Authentication\"",
+    "test:playwright:cucumber-all": "npx playwright test --project=\"Cucumber BDD Tests - Chrome\"",
+    "test:playwright:cucumber-customer": "npx playwright test --project=\"Cucumber Customer Tests\"",
+    "test:playwright:cucumber-basic": "npx playwright test --project=\"Cucumber Basic Tests\"",
+    "test:playwright:cucumber-firefox": "npx playwright test --project=\"Cucumber BDD Tests - Firefox\"",
     "test:generate-report": "node scripts/generate-cucumber-report.js",
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"

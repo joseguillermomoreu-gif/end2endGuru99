@@ -63,7 +63,9 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // ========================================
     // SETUPS
+    // ========================================
     {
       name: 'Setup Authentication',
       testMatch: /.*\/setup\/auth\.guru99\.ts/,
@@ -74,7 +76,9 @@ export default defineConfig({
       },
     },
 
-    // TESTS - projects
+    // ========================================
+    // PLAYWRIGHT TESTS - projects
+    // ========================================
     {
       name: 'Test PPIA - Chrome',
       testMatch: /.*\.generated\.spec\.ts/,
@@ -140,6 +144,68 @@ export default defineConfig({
         storageState: 'playwright/.auth/cms/admin.json'
       },
       dependencies: ['Setup Authentication'],
+    },
+
+    // ========================================
+    // CUCUMBER BDD TESTS
+    // ========================================
+    
+    // CUCUMBER SETUP - Autenticación previa para BDD
+    {
+      name: 'Cucumber Setup Authentication',
+      testMatch: /.*\/cucumber\/setup-cucumber\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false,
+      },
+    },
+
+    // CUCUMBER BDD TESTS - Chrome (todas las features)
+    {
+      name: 'Cucumber BDD Tests - Chrome',
+      testMatch: /.*\/cucumber\/cucumber-all\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false,
+      },
+      dependencies: ['Cucumber Setup Authentication'],
+    },
+
+    // CUCUMBER BDD TESTS - Firefox (todas las features)
+    {
+      name: 'Cucumber BDD Tests - Firefox',
+      testMatch: /.*\/cucumber\/cucumber-all\.spec\.ts/,
+      use: {
+        ...devices['Desktop Firefox'],
+        viewport: VIEW_NORMAL,
+        isMobile: false,
+      },
+      dependencies: ['Cucumber Setup Authentication'],
+    },
+
+    // CUCUMBER CUSTOMER TESTS - Solo gestión de clientes
+    {
+      name: 'Cucumber Customer Tests',
+      testMatch: /.*\/cucumber\/cucumber-customer\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false,
+      },
+      dependencies: ['Cucumber Setup Authentication'],
+    },
+
+    // CUCUMBER HOME & LOGIN TESTS - Solo funcionalidad básica
+    {
+      name: 'Cucumber Basic Tests',
+      testMatch: /.*\/cucumber\/cucumber-basic\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        viewport: VIEW_NORMAL,
+        isMobile: false,
+      },
     },
 
     // {
