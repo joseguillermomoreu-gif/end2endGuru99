@@ -5,8 +5,7 @@ Feature: Autenticación de usuario
   Para acceder a las funcionalidades del banco
 
   Background:
-    Given que el sistema Guru99 Bank está disponible
-    And el usuario está en la página de login
+    Given el usuario está en la página de login
 
   @critical @login-success
   Scenario: Login exitoso con credenciales válidas
