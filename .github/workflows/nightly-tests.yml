@@ -4,8 +4,9 @@ name: 🌙 Nightly E2E Tests
 on:
   # Programación nocturna a las 02:00 UTC (03:00 España invierno UTC+1)
   # NOTA: GitHub Actions tiene delays variables (15min-varias horas) - es comportamiento normal
-  schedule:
-    - cron: '0 2 * * *'
+  # DESHABILITADO: Usuario caducará pronto, ahorrando costes GitHub Actions
+  # schedule:
+  #   - cron: '0 2 * * *'
 
   # Ejecución manual con opciones
   workflow_dispatch:

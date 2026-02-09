@@ -1,3 +1,4 @@
+// DESHABILITADO: Usuario caducará pronto, tests de customer desactivados
 /**
  * 🎯 OBJETIVO DEL TEST:
  * Validar que el usuario puede iniciar sesión correctamente en Guru99 Bank Home Page usando User ID mngr652417 y Password UhEpYne luego acceder a la sección New Customer rellenar el formulario con datos válidos incluyendo email ejemplo@gmail.com sin tildes o caracteres especiales textos cortos pin numérico de 6 dígitos género female y fecha de nacimiento 17/03/1992 y finalmente comprobar que el botón de reset limpia todos los campos del formulario
@@ -5,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
-test('login-y-crear-nuevo-customer-con-reset-guru99', async ({ page }) => {
+test.skip('login-y-crear-nuevo-customer-con-reset-guru99', async ({ page }) => {
   await test.step("Given: el usuario navega a la página de login de Guru99 Bank", async () => {
     await page.goto('https://demo.guru99.com/V4/');
   });

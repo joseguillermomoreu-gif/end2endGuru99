@@ -1,3 +1,4 @@
+// DESHABILITADO: Usuario caducará pronto, tests de customer desactivados
 import { test } from '@playwright/test';
 import * as home from 'components/guru99/home';
 import * as menuLeft from 'components/guru99/menuLeft';
@@ -15,7 +16,7 @@ for (const customerData of VALID_CUSTOMERS) {
         tag: `@CUSTOMER_CREATE_${customerData.gender.toUpperCase()}`,
         annotation: [{ type: 'doc', description: `Verificar creación exitosa customer ${customerData.gender} - ${customerData.name}` }]
     };
-    test(`Crear customer ${customerData.gender} - ${customerData.name}`, INFO_TEST_CREATE, async ({ page }) => {
+    test.skip(`Crear customer ${customerData.gender} - ${customerData.name}`, INFO_TEST_CREATE, async ({ page }) => {
         const customerWithEmail = getCustomerWithEmail(customerData);
         await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
             await home.gotoHome(page);
@@ -54,7 +55,7 @@ const INFO_TEST_REQUIRED = {
     tag: `@CUSTOMER_CREATE_REQUIRED_FIELDS`,
     annotation: [{ type: 'doc', description: 'Verificar que formulario vacío no se envía' }]
 };
-test('Validar que los campos obligatorios son requeridos', INFO_TEST_REQUIRED, async ({ page }) => {
+test.skip('Validar que los campos obligatorios son requeridos', INFO_TEST_REQUIRED, async ({ page }) => {
     await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
         await home.gotoHome(page);
     });
@@ -74,7 +75,7 @@ for (const validationCase of FIELD_VALIDATION_DATA) {
         tag: `@CUSTOMER_CREATE_INVALID_FIELDS`,
         annotation: [{ type: 'doc', description: `Validar campo ${validationCase.field}: ${validationCase.expectedError}` }]
     };
-    test(`Validar campo ${validationCase.field} - ${validationCase.expectedError}`, INFO_TEST_VALIDATION, async ({ page }) => {
+    test.skip(`Validar campo ${validationCase.field} - ${validationCase.expectedError}`, INFO_TEST_VALIDATION, async ({ page }) => {
         const customerData = getCustomerWithEmail(VALID_CUSTOMERS[0]);
         await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
             await home.gotoHome(page);
@@ -108,7 +109,7 @@ const INFO_TEST_RESET = {
     tag: `@CUSTOMER_CREATE_RESET_FORM`,
     annotation: [{ type: 'doc', description: 'Verificar funcionalidad reset limpia formulario' }]
 };
-test('Comprobar que el botón reset limpia el formulario', INFO_TEST_RESET, async ({ page }) => {
+test.skip('Comprobar que el botón reset limpia el formulario', INFO_TEST_RESET, async ({ page }) => {
     const testCustomer = getCustomerWithEmail(VALID_CUSTOMERS[0]);
     await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
         await home.gotoHome(page);
@@ -140,7 +141,7 @@ const INFO_TEST_NAVIGATION = {
     tag: `@CUSTOMER_CREATE_NAVIGATION_BACK`,
     annotation: [{ type: 'doc', description: 'Verificar navegación de vuelta al dashboard' }]
 };
-test('Verificar navegación de vuelta al dashboard desde formulario', INFO_TEST_NAVIGATION, async ({ page }) => {
+test.skip('Verificar navegación de vuelta al dashboard desde formulario', INFO_TEST_NAVIGATION, async ({ page }) => {
     await test.step("Given: Un usuario admin loggeado accede a la home", async () => {
         await home.gotoHome(page);
         const user = process.env.testUser;

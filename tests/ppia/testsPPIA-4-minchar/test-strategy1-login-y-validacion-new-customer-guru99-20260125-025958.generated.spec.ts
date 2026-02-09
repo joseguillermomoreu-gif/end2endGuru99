@@ -1,3 +1,4 @@
+// DESHABILITADO: Usuario caducará pronto, tests de customer desactivados
 /**
  * 🎯 OBJETIVO DEL TEST:
  * Validar que el usuario puede iniciar sesión correctamente con User ID mngr652417 y Password UhEpYne luego acceder a la sección New Customer intentar crear un cliente ingresando solo dos caracteres numéricos en los campos requeridos ignorando el campo de género y usando la fecha 17 de marzo de 1992 y verificar que aparece un alert de error al enviar el formulario
@@ -5,7 +6,7 @@
 
 import { test, expect } from '@playwright/test';
 
-test('login-y-validacion-new-customer-guru99', async ({ page }) => {
+test.skip('login-y-validacion-new-customer-guru99', async ({ page }) => {
   await test.step("Given: el usuario navega a la página de login de Guru99", async () => {
     await page.goto('https://demo.guru99.com/V4/');
     await expect(page.locator('input[name="uid"]')).toBeVisible();
