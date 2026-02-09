@@ -4,7 +4,8 @@ import { promisify } from 'util';
 
 const execAsync = promisify(exec);
 
-test.describe('Cucumber BDD - Solo Customer Features', () => {
+// DESHABILITADO: Usuario caducará pronto, tests de customer desactivados
+test.describe.skip('Cucumber BDD - Solo Customer Features', () => {
   test('Ejecutar solo las features de gestión de clientes', async () => {
     try {
       // Ejecutar solo los tests de customer
