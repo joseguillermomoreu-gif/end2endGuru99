@@ -9,19 +9,39 @@ This repository contains a collection of automated tests for the GURU99 website 
 
 ## Installation
 
+### Opción 1: Docker (Recomendado ✅)
+
+```bash
+# Construir imagen Docker con Node 20 + Playwright
+docker build -t e2e .
+
+# Ejecutar tests
+docker run --env-file .env --ipc=host --network=host --init e2e
+```
+
+Ver sección [Using Docker](#using-docker-recommended) para más detalles.
+
+### Opción 2: Local (Desarrollo IDE)
 
 ```bash
 cd /project_root
+
 # 1. Cambiar a Node 20
-nvm use 20
+source ~/.nvm/nvm.sh && nvm use 20
+nvm alias default 20
+
 # 2. Reinstalar dependencias limpias
 rm -rf node_modules package-lock.json
 npm ci
+
 # 3. Reinstalar Playwright con nueva versión Node
 npx playwright install --with-deps
+
 # 4. Probar que funciona
 npx playwright test --help
 ```
+
+⚠️ **Nota:** Aunque puedes ejecutar localmente, **la forma recomendada es usar Docker** para consistencia entre entornos.
 
 ## Script de gestión (end2end.sh)
 
@@ -69,22 +89,79 @@ Se debe ejecutar en la terminal los siguientes comandos:
 ### Running in CI
 For executing tests in a CI environment, ensure that the environment variable LINE_REPORT is set to true in order to enable the Line Report feature.
 
-## using Docker
-`docker container prune -f && docker volume prune -f`: Para liberar la memoria ocupada por los contenedores de docker (**solo ejecutar cuando sea necesario**)
-`docker build -t e2e .`: This will create an image called e2e to run the tests.
-`docker run --env-file .env --ipc=host --network=host --init e2e`: This will run all the tests.
+## Using Docker (Recommended)
 
-### Procedimiento Ejecucion test Automaticos individuales desde el contenedor para construir adecuadamente las imagenes
-1. Actualizarse en la rama
-1. Construir el contenedor `docker build -t e2e .`
-1. entrar en el contenedor con la actualizacion de los ficheros 
-`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./:/END2ENDTESTS/ e2e /bin/bash`
-   - ejecutar test por fichero `npx playwright test mitest.cms.spec.ts`
-   - ejecutar test por tag `npx playwright test --grep @tag`
-   - ejecutar test por tags (regex) `npx playwright test --grep "@tag1|@tag2"`
+⚠️ **IMPORTANTE:** Todos los tests deben ejecutarse desde Docker, tanto en local como en CI.
 
-### Development
-`sudo docker run -it --env-file .env --ipc=host --network=host --init -v ./tests:/END2ENDTESTS/tests -v ./components:/END2ENDTESTS/components e2e /bin/bash`
-comando desarrollando para actualizacion de los components
-- Alinear todo el fichero actual -> ctrl + mayusc + i
-- Para habilitar los permisos cuando pasamos de contenedor a debuggear en IDE `sudo chmod -R 777 test-results && sudo chmod -R 777 playwright-report && sudo chmod -R 777 playwright`
+### Build de la imagen
+
+```bash
+# Limpiar contenedores y volúmenes antiguos (opcional)
+docker container prune -f && docker volume prune -f
+
+# Construir imagen (usa Node 20 + Playwright)
+docker build -t e2e .
+```
+
+### Ejecutar tests
+
+```bash
+# Todos los tests
+docker run --env-file .env --ipc=host --network=host --init e2e
+
+# Tests específicos
+docker run --env-file .env --ipc=host --network=host --init e2e \
+  npx playwright test --project="Login Tests Admin - Chrome"
+
+# Setup + QA tests
+docker run --env-file .env --ipc=host --network=host --init e2e \
+  npx playwright test --project="Setup Authentication" --project="Login Tests Admin - Chrome"
+```
+
+### Modo interactivo (desarrollo)
+
+```bash
+# Entrar al contenedor con shell
+docker run -it --env-file .env --ipc=host --network=host --init \
+  -v ./:/END2ENDTESTS/ \
+  e2e /bin/bash
+
+# Dentro del contenedor:
+npx playwright test                                    # Todos los tests
+npx playwright test tests/customer/customer.login.spec.ts  # Test específico
+npx playwright test --grep @tag                       # Por tag
+npx playwright test --grep "@tag1|@tag2"              # Múltiples tags
+npx playwright test --headed                          # Con browser visible
+```
+
+### Desarrollo con hot-reload
+
+```bash
+# Montar solo carpetas de código (más rápido)
+docker run -it --env-file .env --ipc=host --network=host --init \
+  -v ./tests:/END2ENDTESTS/tests \
+  -v ./components:/END2ENDTESTS/components \
+  -v ./features:/END2ENDTESTS/features \
+  -v ./step-definitions:/END2ENDTESTS/step-definitions \
+  e2e /bin/bash
+```
+
+### Permisos después de ejecutar
+
+```bash
+# Cambiar permisos de archivos generados por Docker
+sudo chmod -R 777 test-results
+sudo chmod -R 777 playwright-report
+sudo chmod -R 777 playwright/.auth
+```
+
+### Verificación
+
+```bash
+# Verificar versión de Node en la imagen
+docker run --rm e2e node --version
+# Debe mostrar: v20.x.x
+
+# Verificar Playwright instalado
+docker run --rm e2e npx playwright --version
+```
