@@ -165,21 +165,17 @@ jobs:
         run: docker build -t e2e .
 
       # NOTA: Cucumber Customer Tests removidos (usuario caducará, tests skipped)
-      # Ver: tests/cucumber/cucumber-customer.spec.ts (marcado como .skip)
+      # Ver: tests/cucumber/cucumber-customer.spec.ts y cucumber-all.spec.ts (marcados como .skip)
+      # Solo ejecutamos cucumber-basic.spec.ts que no incluye tests de customer
 
       - name: Run Cucumber BDD Tests
         run: |
-          # Tests básicos y completos desde Docker (con volumen para artifacts)
+          # Tests básicos (HOME + LOGIN) desde Docker (con volumen para artifacts)
           docker run --env-file .env --ipc=host --network=host --init \
             -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
             -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
             e2e xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
             npx playwright test tests/cucumber/cucumber-basic.spec.ts
-          docker run --env-file .env --ipc=host --network=host --init \
-            -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
-            -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
-            e2e xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
-            npx playwright test tests/cucumber/cucumber-all.spec.ts
 
       - name: Upload Cucumber Test Results
         if: always()
