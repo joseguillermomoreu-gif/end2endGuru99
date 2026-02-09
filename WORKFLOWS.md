@@ -2,7 +2,14 @@
 
 ## 📋 Configuración Automática
 
-Los workflows están configurados para ejecutarse automáticamente cada noche a las **03:00 UTC** (04:00 hora española) **SOLO en la rama master**.
+⚠️ **ACTUALIZACIÓN 2026-02-09**: El cron nocturno ha sido **DESHABILITADO** permanentemente.
+
+**Razón:** El usuario de pruebas (mngr652417) caducará pronto. Los tests de customer han sido marcados como `.skip()` para evitar fallos.
+
+**Ejecución actual:**
+- ✅ Manual (workflow_dispatch)
+- ✅ Push a master
+- ❌ ~~Automática nocturna~~ (DESHABILITADA)
 
 ## 🌳 Flujo de Branches
 
@@ -22,14 +29,16 @@ git push origin master  # ← Pipelines activados
 
 ## 🚀 GitHub Actions
 
-### Configuración Automática:
-- ⏰ **Diariamente a las 03:00 UTC** desde `master`
+### Configuración Actual:
+- ❌ ~~Diariamente a las 03:00 UTC~~ **(DESHABILITADO 2026-02-09)**
 - 🔄 **En push/merge a master**
 - 🎛️ **Manualmente** desde GitHub UI
 
 ### Fases de Tests:
-1. **🔑 QA Tests** - Setup auth + Customer tests (21 tests)
+1. **🔑 QA Tests** - Setup auth + Login tests (~5 tests activos)
+   - ⚠️ Customer tests (16 tests) marcados como `.skip()`
 2. **🤖 PPIA Tests** - Tests generados automáticamente
+   - ⚠️ Customer PPIA tests (15 archivos) marcados como `.skip()`
 
 ### Ejecución Manual:
 1. Ir a **Actions** en GitHub
@@ -83,15 +92,18 @@ Cada job es completamente independiente:
 
 ## ⚙️ Personalización
 
-### Cambiar Horario:
+### Reactivar Cron (si fuera necesario):
 ```yaml
 # GitHub: .github/workflows/nightly-tests.yml
+# Descomentar líneas 7-8:
 schedule:
   - cron: '0 2 * * *'  # 02:00 UTC
 
 # GitLab: Schedules UI
 Interval Pattern: "0 2 * * *"
 ```
+
+⚠️ **Nota:** No reactivar hasta que se resuelva el tema del usuario de pruebas.
 
 ### Cambiar Variables:
 ```bash
