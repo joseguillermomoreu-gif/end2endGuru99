@@ -39,6 +39,8 @@ on:
 
 env:
   baseUrl: "https://demo.guru99."
+  domain: "com"
+  version: "V4"
   testUser: "mngr652417"
   testPass: "UhEpYne"
 
@@ -67,6 +69,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "domain=${{ env.domain }}" >> .env
+          echo "version=${{ env.version }}" >> .env
           echo "testUser=${{ env.testUser }}" >> .env
           echo "testPass=${{ env.testPass }}" >> .env
 
@@ -114,6 +118,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "domain=${{ env.domain }}" >> .env
+          echo "version=${{ env.version }}" >> .env
           echo "testUser=${{ env.testUser }}" >> .env
           echo "testPass=${{ env.testPass }}" >> .env
 
@@ -150,6 +156,8 @@ jobs:
       - name: Create .env file
         run: |
           echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "domain=${{ env.domain }}" >> .env
+          echo "version=${{ env.version }}" >> .env
           echo "testUser=${{ env.testUser }}" >> .env
           echo "testPass=${{ env.testPass }}" >> .env
 
