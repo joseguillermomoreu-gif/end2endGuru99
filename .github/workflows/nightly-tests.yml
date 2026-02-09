@@ -75,15 +75,18 @@ jobs:
 
       - name: Run QA Tests - ${{ matrix.browser }}
         run: |
-          # Setup auth + QA tests desde Docker
+          # Setup auth + QA tests desde Docker con xvfb
           docker run --env-file .env --ipc=host --network=host --init e2e \
+            xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
             npx playwright test --project="Setup Authentication"
 
           if [ "${{ matrix.browser }}" = "firefox" ]; then
             docker run --env-file .env --ipc=host --network=host --init e2e \
+              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
               npx playwright test --project="Login Tests Admin - Firefox"
           else
             docker run --env-file .env --ipc=host --network=host --init e2e \
+              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
               npx playwright test --project="Login Tests Admin - Chrome"
           fi
 
@@ -121,9 +124,11 @@ jobs:
         run: |
           if [ "${{ matrix.browser }}" = "firefox" ]; then
             docker run --env-file .env --ipc=host --network=host --init e2e \
+              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
               npx playwright test --project="Test PPIA - Firefox"
           else
             docker run --env-file .env --ipc=host --network=host --init e2e \
+              xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
               npx playwright test --project="Test PPIA - Chrome"
           fi
 
@@ -160,11 +165,13 @@ jobs:
           docker run --env-file .env --ipc=host --network=host --init \
             -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
             -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
-            e2e npx playwright test tests/cucumber/cucumber-basic.spec.ts
+            e2e xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
+            npx playwright test tests/cucumber/cucumber-basic.spec.ts
           docker run --env-file .env --ipc=host --network=host --init \
             -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
             -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
-            e2e npx playwright test tests/cucumber/cucumber-all.spec.ts
+            e2e xvfb-run --auto-servernum --server-args="-screen 0 1280x960x24" \
+            npx playwright test tests/cucumber/cucumber-all.spec.ts
 
       - name: Upload Cucumber Test Results
         if: always()

@@ -6,9 +6,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Europe/Madrid
 ENV RUNNING_IN_DOCKER=true
 
-# Instalación de dependencias del sistema y Playwright
+# Instalación de dependencias del sistema, xvfb y Playwright
 RUN apt-get update && \
-    apt-get install -y tzdata && \
+    apt-get install -y tzdata xvfb && \
     ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && \
     echo $TZ > /etc/timezone
 
@@ -30,5 +30,5 @@ RUN npx playwright install --with-deps
 # Copiar resto del código
 COPY . .
 
-# Comando por defecto
-CMD [ "npm", "run", "test" ] 
+# Comando por defecto con xvfb para browsers headless
+CMD [ "xvfb-run", "--auto-servernum", "--server-args=-screen 0 1280x960x24", "npm", "run", "test" ] 
