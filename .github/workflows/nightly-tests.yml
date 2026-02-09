@@ -154,16 +154,10 @@ jobs:
       - name: Install Playwright (for browser automation)
         run: npx playwright install --with-deps
 
-      - name: Run Cucumber Customer Tests (with retry)
-        run: |
-          # Tests customer con retry=1
-          npx playwright test tests/cucumber/cucumber-customer.spec.ts --retries=1
-        env:
-          testUser: ${{ env.testUser }}
-          testPass: ${{ env.testPass }}
-          baseUrl: ${{ env.baseUrl }}
+      # NOTA: Cucumber Customer Tests removidos (usuario caducará, tests skipped)
+      # Ver: tests/cucumber/cucumber-customer.spec.ts (marcado como .skip)
 
-      - name: Run Other Cucumber BDD Tests
+      - name: Run Cucumber BDD Tests
         run: |
           # Tests básicos y completos sin retry específico
           npx playwright test tests/cucumber/cucumber-basic.spec.ts

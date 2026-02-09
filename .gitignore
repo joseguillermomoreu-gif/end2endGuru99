@@ -16,3 +16,7 @@ playwright/.auth/
 *.swp
 *.swo
 *~
+
+# Claude Code - Archivos privados de contexto
+CLAUDE.md
+MEMORY.md
