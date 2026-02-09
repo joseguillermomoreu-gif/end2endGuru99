@@ -64,26 +64,27 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Create .env file
+        run: |
+          echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "testUser=${{ env.testUser }}" >> .env
+          echo "testPass=${{ env.testPass }}" >> .env
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Build Docker image
+        run: docker build -t e2e .
 
       - name: Run QA Tests - ${{ matrix.browser }}
         run: |
-          # Setup auth + Customer tests en un solo paso
-          npx playwright test --project="Setup Authentication"
+          # Setup auth + QA tests desde Docker
+          docker run --env-file .env --ipc=host --network=host --init e2e \
+            npx playwright test --project="Setup Authentication"
+
           if [ "${{ matrix.browser }}" = "firefox" ]; then
-            npx playwright test --project="Login Tests Admin - Firefox"
+            docker run --env-file .env --ipc=host --network=host --init e2e \
+              npx playwright test --project="Login Tests Admin - Firefox"
           else
-            npx playwright test --project="Login Tests Admin - Chrome"
+            docker run --env-file .env --ipc=host --network=host --init e2e \
+              npx playwright test --project="Login Tests Admin - Chrome"
           fi
 
   # ========================================
@@ -107,24 +108,23 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Create .env file
+        run: |
+          echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "testUser=${{ env.testUser }}" >> .env
+          echo "testPass=${{ env.testPass }}" >> .env
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright
-        run: npx playwright install --with-deps
+      - name: Build Docker image
+        run: docker build -t e2e .
 
       - name: Run PPIA Tests - ${{ matrix.browser }}
         run: |
           if [ "${{ matrix.browser }}" = "firefox" ]; then
-            npx playwright test --project="Test PPIA - Firefox"
+            docker run --env-file .env --ipc=host --network=host --init e2e \
+              npx playwright test --project="Test PPIA - Firefox"
           else
-            npx playwright test --project="Test PPIA - Chrome"
+            docker run --env-file .env --ipc=host --network=host --init e2e \
+              npx playwright test --project="Test PPIA - Chrome"
           fi
 
   # ========================================
@@ -142,30 +142,29 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-          cache: 'npm'
+      - name: Create .env file
+        run: |
+          echo "baseUrl=${{ env.baseUrl }}" > .env
+          echo "testUser=${{ env.testUser }}" >> .env
+          echo "testPass=${{ env.testPass }}" >> .env
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install Playwright (for browser automation)
-        run: npx playwright install --with-deps
+      - name: Build Docker image
+        run: docker build -t e2e .
 
       # NOTA: Cucumber Customer Tests removidos (usuario caducará, tests skipped)
       # Ver: tests/cucumber/cucumber-customer.spec.ts (marcado como .skip)
 
       - name: Run Cucumber BDD Tests
         run: |
-          # Tests básicos y completos sin retry específico
-          npx playwright test tests/cucumber/cucumber-basic.spec.ts
-          npx playwright test tests/cucumber/cucumber-all.spec.ts
-        env:
-          testUser: ${{ env.testUser }}
-          testPass: ${{ env.testPass }}
-          baseUrl: ${{ env.baseUrl }}
+          # Tests básicos y completos desde Docker (con volumen para artifacts)
+          docker run --env-file .env --ipc=host --network=host --init \
+            -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
+            -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
+            e2e npx playwright test tests/cucumber/cucumber-basic.spec.ts
+          docker run --env-file .env --ipc=host --network=host --init \
+            -v ${{ github.workspace }}/test-results:/END2ENDTESTS/test-results \
+            -v ${{ github.workspace }}/reports:/END2ENDTESTS/reports \
+            e2e npx playwright test tests/cucumber/cucumber-all.spec.ts
 
       - name: Upload Cucumber Test Results
         if: always()
